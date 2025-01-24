@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ConvenioUniversidades from "../components/ConvenioUniversidades.vue";
 import CompararUniversidades from "../components/CompararUniversidades.vue";
+import RankingConvenios from "../components/RankingConvenios.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: "/comparar-universidades",
       name: "comparar-universidades",
       component: CompararUniversidades
+    },
+    {
+      path: "/ranking-convenios",
+      name: "rankingConvenios",
+      component: RankingConvenios
     }
 
     // {

@@ -22,6 +22,10 @@ export default {
 					name: "Comparar Universidades",
 					link: "/comparar-universidades",
 				},
+				{
+					name: "Ranking Convenios",
+					link: "/ranking-convenios"
+				}
 			],
 		}
 	}
