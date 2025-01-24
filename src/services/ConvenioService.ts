@@ -201,4 +201,14 @@ export default class ConvenioService {
             throw new Error(`Ocorreu um erro ao consultarmos o Servidor. Tente novamente mais tarde!`);
         }
     }
+
+    async getConveniosRanking(request: any): Promise<any> {
+        try {
+            const response = await http.get(`/api/convenios/ranking?startYear=${request.startYear}&endYear=${request.endYear}&limit=${request.limit}`);
+            return response.data;
+        }catch(error: any){
+            console.log(error.name, error.message);
+            throw new Error("Ocorreu um erro ao consultarmos o Servidor. Tente novamente mais tarde!");
+        }
+    }
 }
