@@ -4,24 +4,23 @@
       <TreeTable :value="ifesTree" size="small">
         <template #header>
           <h2>
-            Comparação de Convenios entre Universidades no período de {{
-              startYear
-            }} até {{ endYear }}
+            Comparação de Convenios entre Universidades no período de {{ startYear }} até
+            {{ endYear }}
           </h2>
         </template>
-        <Column field="nome" header="Nome" expander style="width: 55%;"></Column>
-        <Column field="qtdConvenios" header="Qtd. Convenios" style="width: 10%;"></Column>
-        <Column header="Valor Total Liberado" style="width: 15%;">
+        <Column field="nome" header="Nome" expander style="width: 55%"></Column>
+        <Column field="qtdConvenios" header="Qtd. Convenios" style="width: 10%"></Column>
+        <Column header="Valor Total Liberado" style="width: 15%">
           <template #body="slotProps">
             {{ formatValue(slotProps.node.data.valorTotalLiberado) }}
           </template>
         </Column>
-        <Column header="Valor Total Contratado" style="width: 15%;">
+        <Column header="Valor Total Contratado" style="width: 15%">
           <template #body="slotProps">
             {{ formatValue(slotProps.node.data.valorTotalContratado) }}
           </template>
         </Column>
-        <Column field="porcentagemPaga" header="% Pago" style="width: 5%;"></Column>
+        <Column field="porcentagemPaga" header="% Pago" style="width: 5%"></Column>
       </TreeTable>
     </div>
 
@@ -120,61 +119,66 @@ export default {
     endYear: { type: String, required: true }
   },
   methods: {
-    formatValue, 
+    formatValue,
 
     buildHorizontalBarChartDataOptions(dataSetInteger = false, element = null) {
-  const options = {
-    indexAxis: 'y',
-    responsive: true, 
-    maintainAspectRatio: false, 
-    plugins: {
-      legend: {
-        display: true, 
-        labels: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-          font: {
-            size: 14, 
+      const options = {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+              font: {
+                size: 14
+              }
+            }
           },
+          datalabels: false
         },
-      },
-      datalabels: false,
+        scales: {
+          x: {
+            ticks: {
+              stepSize: dataSetInteger ? 1 : undefined,
+              color: getComputedStyle(document.documentElement).getPropertyValue(
+                '--text-color-secondary'
+              ),
+              font: {
+                weight: 'bold'
+              }
+            },
+            grid: {
+              display: true,
+              color: getComputedStyle(document.documentElement).getPropertyValue(
+                '--surface-border'
+              ),
+              drawBorder: false
+            }
+          },
+          y: {
+            ticks: {
+              color: getComputedStyle(document.documentElement).getPropertyValue(
+                '--text-color-secondary'
+              ),
+              font: {
+                weight: 'bold'
+              }
+            },
+            grid: {
+              color: getComputedStyle(document.documentElement).getPropertyValue('--surface-border')
+            }
+          }
+        }
+      }
+
+      if (element != null) {
+        options.aspectRatio = this.ifesTree[element].children.length < 2 ? 8 : 5
+      }
+
+      return options
     },
-    scales: {
-      x: {
-        ticks: {
-          stepSize: dataSetInteger ? 1 : undefined,
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color-secondary'),
-          font: {
-            weight: 'bold',
-          },
-        },
-        grid: {
-          display: true, 
-          color: getComputedStyle(document.documentElement).getPropertyValue('--surface-border'),
-          drawBorder: false,
-        },
-      },
-      y: {
-        ticks: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color-secondary'),
-          font: {
-            weight: 'bold', 
-          },
-        },
-        grid: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--surface-border'),
-        },
-      },
-    },
-  };
-
-  if (element != null) {
-    options.aspectRatio = this.ifesTree[element].children.length < 2 ? 8 : 5;
-  }
-
-  return options;
-},
-
 
     buildHorizontalBarChartDataValorTotalLiberado(index) {
       const convenentes = this.ifesTree[index].children
@@ -205,7 +209,7 @@ export default {
     buildHorizontalBarChartQtdConvenios(index) {
       const convenentes = this.ifesTree[index].children
 
-      const nomesConvenentes = convenentes.map((convenente) => convenente.data.nome);
+      const nomesConvenentes = convenentes.map((convenente) => convenente.data.nome)
       const qtdConvenios = convenentes.map((convenente) => convenente.data.qtdConvenios)
 
       return {
@@ -261,67 +265,73 @@ export default {
     },
 
     buildStackedHorizontalBarChartDataOptions(element = null) {
-  const options = {
-    indexAxis: 'y',
-    responsive: true, 
-    maintainAspectRatio: false,
-    plugins: {
-      tooltip: { 
-        mode: 'index',
-        intersect: false,
-      },
-      legend: {
-        display: true, 
-        labels: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
-          font: {
-            size: 14, 
+      const options = {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            mode: 'index',
+            intersect: false
           },
-        },
-      },
-      datalabels: false,
-    },
-    scales: {
-      x: {
-        stacked: true,
-        ticks: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color-secondary'),
-          font: {
-            weight: 'bold',
+          legend: {
+            display: true,
+            labels: {
+              color: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+              font: {
+                size: 14
+              }
+            }
           },
+          datalabels: false
         },
-        grid: {
-          display: true, 
-          color: getComputedStyle(document.documentElement).getPropertyValue('--surface-border'),
-          drawBorder: false,
-        },
-      },
-      y: {
-        stacked: true,
-        ticks: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--text-color-secondary'),
-          font: {
-            weight: 'bold', 
+        scales: {
+          x: {
+            stacked: true,
+            ticks: {
+              color: getComputedStyle(document.documentElement).getPropertyValue(
+                '--text-color-secondary'
+              ),
+              font: {
+                weight: 'bold'
+              }
+            },
+            grid: {
+              display: true,
+              color: getComputedStyle(document.documentElement).getPropertyValue(
+                '--surface-border'
+              ),
+              drawBorder: false
+            }
           },
-        },
-        grid: {
-          color: getComputedStyle(document.documentElement).getPropertyValue('--surface-border'),
-        },
-      },
-    },
-  };
+          y: {
+            stacked: true,
+            ticks: {
+              color: getComputedStyle(document.documentElement).getPropertyValue(
+                '--text-color-secondary'
+              ),
+              font: {
+                weight: 'bold'
+              }
+            },
+            grid: {
+              color: getComputedStyle(document.documentElement).getPropertyValue('--surface-border')
+            }
+          }
+        }
+      }
 
-  if (element != null) {
-    options.aspectRatio = this.ifesTree[element].children.length < 2 ? 8 : 5;
-  }
+      if (element != null) {
+        options.aspectRatio = this.ifesTree[element].children.length < 2 ? 8 : 5
+      }
 
-  return options;
-},
+      return options
+    },
 
     buildStackedHorizontalBarChartDataValorTotalLiberado(index) {
       const convenentes = this.ifesTree[index].children
       const labels = convenentes.map((convenente) => {
-        return convenente.data.nome;
+        return convenente.data.nome
       })
 
       const valorTotalLiberado = convenentes.map((convenente) => {
@@ -557,51 +567,51 @@ export default {
 
 <style scoped>
 .comparison-results-container {
-    width: 90%;
-    margin: 3em auto;
-    display: flex;
-    flex-direction: column;
+  width: 90%;
+  margin: 3em auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .tree-table-container {
-    width: 100%;
-    margin-bottom: 2em;
+  width: 100%;
+  margin-bottom: 2em;
 }
 
 .charts-container {
-    width: 100%;
-    padding: 1em;
-    border-radius: 3px;
-    border: 1px solid #bcbcbc;
-    flex-grow: 1;
+  width: 100%;
+  padding: 1em;
+  border-radius: 3px;
+  border: 1px solid #bcbcbc;
+  flex-grow: 1;
 }
 
 .charts-header-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-bottom: 1em;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 1em;
 }
 
 .charts-header {
-    font-size: 20px;
+  font-size: 20px;
 }
 
 .export-pdf-btn {
-  width: 5%
+  width: 5%;
 }
 
 .tab-panel-container {
-    width: 100%;
-    margin: 1em 0;
-    padding: 1em 0;
-    border-radius: 3px;
+  width: 100%;
+  margin: 1em 0;
+  padding: 1em 0;
+  border-radius: 3px;
 }
 
 h4 {
-    text-align: center;
-    margin: 0 2.5em 0.5em;
-    font-size: 20px;
+  text-align: center;
+  margin: 0 2.5em 0.5em;
+  font-size: 20px;
 }
 
 .chart-container {
@@ -609,63 +619,62 @@ h4 {
 }
 
 .tab-panel-container .chart-container {
-    width: 100%;
-    display: flex;
-    flex-flow: column;
-    margin-bottom: 1em;
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  margin-bottom: 1em;
 }
 
 .full-detailed-chart {
-    width: 99%;
-    min-height: 20em;
-    max-height: 25em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1.5px solid #bcbcbc;
-    padding: 0.5em;
-    border-radius: 3px;
-    background-color: aliceblue;
+  width: 99%;
+  min-height: 20em;
+  max-height: 25em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1.5px solid #bcbcbc;
+  padding: 0.5em;
+  border-radius: 3px;
+  background-color: aliceblue;
 }
-
 
 .all-universities-charts-container .chart-container {
-    width: 100%;
-    display: flex;
-    flex-flow: row;
-    margin-bottom: 1em;
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  margin-bottom: 1em;
 }
 
-.chart-group { 
-    display: flex; 
-    flex-direction: row; 
-    align-items: top; 
-    justify-content: center; 
+.chart-group {
+  display: flex;
+  flex-direction: row;
+  align-items: top;
+  justify-content: center;
 }
 
 .detailed-chart {
-    width: 70%;
-    min-height: 20em;
-    max-height: 30em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1.5px solid #bcbcbc;
-    padding: 1.5em;
-    border-radius: 3px;
-    background-color: aliceblue;
+  width: 70%;
+  min-height: 20em;
+  max-height: 30em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1.5px solid #bcbcbc;
+  padding: 1.5em;
+  border-radius: 3px;
+  background-color: aliceblue;
 }
 
 .doughnut-chart {
-    width: 30%;
-    min-height: 3em;
-    max-height: 20em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1.5px solid #bcbcbc;
-    padding: 1.5em;
-    border-radius: 3px;
-    background-color: aliceblue;
+  width: 30%;
+  min-height: 3em;
+  max-height: 20em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1.5px solid #bcbcbc;
+  padding: 1.5em;
+  border-radius: 3px;
+  background-color: aliceblue;
 }
 </style>

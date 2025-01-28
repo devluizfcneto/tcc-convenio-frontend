@@ -78,10 +78,10 @@ export default {
       endYear: null
     }
   },
-  mounted(){
-    const currentYear = new Date().getFullYear();
-    this.startYear = currentYear;
-    this.endYear = currentYear;
+  mounted() {
+    const currentYear = new Date().getFullYear()
+    this.startYear = currentYear
+    this.endYear = currentYear
   },
   methods: {
     addNewIfesInput() {
@@ -105,14 +105,14 @@ export default {
   flex-direction: row;
   align-items: center;
   overflow-x: auto;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 }
 
 .ife-input-container {
   display: flex;
   flex-direction: column;
   margin-right: 1.5em;
-  width: 28%; 
+  width: 28%;
   max-width: 30%;
 }
 
@@ -121,7 +121,7 @@ export default {
   margin: 1em auto;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 }
@@ -141,7 +141,7 @@ label {
   color: white;
   margin-left: 1em;
   padding: 1em;
-  min-width: 20%; 
-  background-color: #4B5D9D;
+  min-width: 20%;
+  background-color: #4b5d9d;
 }
 </style>

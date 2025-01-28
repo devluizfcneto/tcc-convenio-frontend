@@ -74,7 +74,7 @@ export default {
           this.requestComparison.queryParam.endYear,
           this.requestComparison.body.ifesSelected
         )
-        this.responseComparison = response.comparacaoIfesConveniosResponse;
+        this.responseComparison = response.comparacaoIfesConveniosResponse
         this.comparisonLoaded = true
         this.ifesTree = this.buildTreeFormat()
       } catch (error) {
