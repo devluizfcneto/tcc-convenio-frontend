@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router"
-import Header from "./components/Header.vue";
-import Footer from "./components/Footer.vue";
-import Aside from "./components/Aside.vue";
+import { RouterView } from 'vue-router'
+import Header from './components/Layout/Header.vue'
+import Footer from './components/Layout/Footer.vue'
+import Aside from './components/Layout/Aside.vue'
 </script>
 
 <template>
-  <div class="container-app">
+  <div class="app-wrapper">
     <Header />
     <div class="container-content">
       <Aside />
@@ -16,16 +16,15 @@ import Aside from "./components/Aside.vue";
   </div>
 </template>
 
-<style>
-.container-app {
-  width: 100%;
+<style scoped>
+.app-wrapper {
   display: flex;
-  flex-flow: column;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.container-content{
-  width: 100%;
+.container-content {
   display: flex;
-  min-height: calc(100vh - 50px);
+  flex-grow: 1;
 }
 </style>
