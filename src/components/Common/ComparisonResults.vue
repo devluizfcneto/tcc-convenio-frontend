@@ -569,8 +569,47 @@ export default {
 .comparison-results-container {
   width: 90%;
   margin: 3em auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column;
+  flex-flow: column;
+}
+
+.comparison-results-container .p-treetable .p-treetable-header {
+  padding: 1rem;
+  font-weight: 700;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.comparison-results-container .p-treetable .p-treetable-tbody > tr > td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+}
+
+.charts-container {
+  width: 100%;
+  padding: 1em;
+  border-radius: 3px;
+  flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  .ifes-inputs-container {
+    flex-direction: column;
+  }
+
+  .ife-input-container {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .period-inputs-container {
+    flex-direction: column;
+  }
 }
 
 .tree-table-container {
@@ -578,23 +617,11 @@ export default {
   margin-bottom: 2em;
 }
 
-.charts-container {
-  width: 100%;
-  padding: 1em;
-  border-radius: 3px;
-  border: 1px solid #bcbcbc;
-  flex-grow: 1;
-}
-
 .charts-header-container {
   display: flex;
   justify-content: space-around;
   align-items: center;
   margin-bottom: 1em;
-}
-
-.charts-header {
-  font-size: 20px;
 }
 
 .export-pdf-btn {

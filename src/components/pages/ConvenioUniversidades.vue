@@ -1,6 +1,9 @@
 <template>
   <div class="container-main">
     <div class="container-datatable">
+      <div v-if="isLoading" class="loading-overlay">
+        <ProgressSpinner />
+      </div>
       <CustomDataTable
         :data="allConvenios"
         :columns="columns"
@@ -51,9 +54,10 @@ import { formatDate, formatValue } from '@/utils/format'
 import CustomDataTable from '@/components/Common/CustomDataTable.vue'
 import { FilterMatchMode } from 'primevue/api'
 import { downloadCSV, formatDataToCSV } from '@/utils/exportCsv'
+import ProgressSpinner from 'primevue/progressspinner'
 
 export default {
-  components: { Button, Modal, Toast, CustomDataTable },
+  components: { Button, Modal, Toast, CustomDataTable, ProgressSpinner },
   data() {
     return {
       allConvenios: [],
@@ -215,6 +219,7 @@ export default {
 <style scoped>
 .container-main {
   width: 80%;
+  font-family: sans-serif;
 }
 
 .container-table-header {
@@ -260,5 +265,18 @@ h2 {
 .loading {
   pointer-events: none;
   opacity: 0.7;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 </style>

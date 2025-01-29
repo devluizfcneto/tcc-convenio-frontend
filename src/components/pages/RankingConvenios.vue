@@ -2,57 +2,12 @@
   <div class="container-main">
     <h2>Ranking de Convenios</h2>
 
-    <!-- Formulario para preencher o período, data incicial 2020 e data final até ano corrente e quantidade máxima de Ifes/Convenios -->
-    <form class="ranking-form-container">
-      <div class="label-form">
-        <label for="startYear"> De: </label>
-        <Dropdown
-          class="dropdown"
-          v-model="startYear"
-          :options="yearOptions"
-          placeholder="Data Inicio..."
-          dateFormat="yy"
-          showIcon
-          inputId="startYear"
-          iconDisplay="input"
-        />
-      </div>
-      <div class="label-form">
-        <label for="endYear"> Até: </label>
-        <Dropdown
-          class="dropdown"
-          v-model="endYear"
-          :options="yearOptions"
-          placeholder="Data Fim..."
-          dateFormat="yy"
-          showIcon
-          inputId="endYear"
-          iconDisplay="input"
-        />
-      </div>
+    <RankingForm
+      :yearOptions="yearOptions"
+      :limitOptions="limitOptions"
+      @generate-ranking="generateRanking"
+    />
 
-      <div class="label-form">
-        <label for="limit"> Quantidade: </label>
-        <Dropdown
-          class="dropdown"
-          v-model="limit"
-          :options="limitOptions"
-          placeholder="Quantidade..."
-          showIcon
-          inputId="limit"
-          iconDisplay="input"
-        />
-      </div>
-
-      <Button
-        @click.lazy="generateRanking"
-        type="button"
-        label="Exibir Ranking"
-        class="btn-ranking"
-      ></Button>
-    </form>
-
-    <!-- Exibir tabela com Nome Universidades, valor total liberado, convenente que mais recebeu repasse, valor que convenente recebeu da Universidade -->
     <div class="data-table-container" v-if="isLoaded">
       <DataTable
         :value="ifesRankingFormated"
@@ -111,9 +66,10 @@
       </DataTable>
     </div>
 
-    <!-- Exibir Gráfico de Ranking de Universidades, Vertical: Nome das universidades / Horizontal: valorTotalLiberado -->
+    <div v-if="isLoading" class="loading-overlay">
+      <ProgressSpinner />
+    </div>
 
-    <!-- Exibir tabela com nome dos Convenenentes, valor total liberado e Universidade que repassou para o convenente -->
     <div class="data-table-container" v-if="isLoaded">
       <DataTable
         :value="convenentesRankingFormated"
@@ -166,7 +122,6 @@
       </DataTable>
     </div>
 
-    <!-- Exibir Gráfico de Ranking de Convenentes , Vertical: Nome dos convenentes / Horizontal: valorTotalLiberado -->
     <Toast />
   </div>
 </template>
@@ -178,14 +133,17 @@ import ConvenioService from '@/services/ConvenioService'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { formatValue, formatStringStartYear, formatStringEndYear } from '@/utils/format'
-// import { exportCSV } from "primevue/utils";
+import RankingForm from '../Common/RankingForm.vue'
+import ProgressSpinner from 'primevue/progressspinner'
 
 export default {
   components: {
     Dropdown,
     Button,
     DataTable,
-    Column
+    Column,
+    RankingForm,
+    ProgressSpinner
   },
   data() {
     return {
@@ -197,6 +155,7 @@ export default {
 
       ifesRankingResponse: [],
       convenentesRankingResponse: [],
+      isLoading: false,
       isLoaded: false,
 
       ifesRankingFormated: [],
@@ -204,7 +163,6 @@ export default {
     }
   },
   async mounted() {
-    console.log('created do CompararUniversidades executado')
     this.initializeOptions()
   },
   methods: {
@@ -219,12 +177,13 @@ export default {
       this.limitOptions = ['5', '10', '15', '20']
       this.limit = this.limitOptions[0]
     },
-    async generateRanking() {
+    async generateRanking(formInputs) {
+      this.isLoading = true
       try {
         const request = {
-          startYear: formatStringStartYear(this.startYear),
-          endYear: formatStringEndYear(this.endYear),
-          limit: this.limit
+          startYear: formatStringStartYear(formInputs.startYear),
+          endYear: formatStringEndYear(formInputs.endYear),
+          limit: formInputs.limit
         }
         const ranking = await ConvenioService.getConveniosRanking(
           request.startYear,
@@ -239,6 +198,8 @@ export default {
       } catch (error) {
         this.showErrors(error.message)
         this.isLoaded = false
+      } finally {
+        this.isLoading = false
       }
     },
     formatIfesRanking() {
@@ -292,54 +253,61 @@ export default {
 
 <style lang="css" scoped>
 .container-main {
-  width: 100%;
+  width: 95%;
+  margin: 1em auto;
+  font-family: sans-serif;
 }
 
 h2 {
-  font-size: 25px;
-  margin: 1em 1em;
-  font-weight: bold;
-}
-
-.ranking-form-container {
-  width: 95%;
-  display: flex;
-  flex-flow: row;
-  margin: 1.5em auto;
-  justify-content: flex-start;
-  padding: 1.5em 3em;
-}
-
-.label-form {
-  margin-left: 2em;
-  font-size: 16px;
-}
-
-.dropdown {
-  width: 100%;
-}
-
-.btn-ranking {
-  color: white;
-  margin-left: 1em;
-  padding: 1em;
-  min-width: 10%;
-  background-color: #4b5d9d;
+  font-size: 2em;
+  margin-bottom: 0.5em;
+  text-align: center;
+  color: #333;
 }
 
 .data-table-container {
-  width: 90%;
-  margin: 1.5em auto;
-  border: black 1.5px solid;
-  border-radius: 3px;
+  width: 95%;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .container-table-header {
-  width: 95%;
-  margin: 0 auto;
   display: flex;
-  flex-flow: row;
   justify-content: space-between;
   align-items: center;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.container-table-header h3 {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+.p-datatable .p-datatable-header {
+  padding: 1rem;
+  font-weight: 700;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 </style>

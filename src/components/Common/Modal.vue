@@ -87,14 +87,6 @@ export default {
 </script>
 
 <style scoped>
-:root {
-  --modal-bg: rgba(0, 0, 0, 0.5);
-  --modal-content-bg: #4b5d9d;
-  --modal-text-color: #ffffff;
-  --modal-padding: 20px;
-  --modal-border-radius: 8px;
-}
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -105,16 +97,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 3; /* Garante que o modal fique acima de outros elementos */
+  z-index: 3;
 }
 
 .my-modal {
   padding: 20px;
   border-radius: 8px;
-  width: 50%; /* Largura responsiva */
-  max-width: 70%; /* Largura máxima */
+  width: 50%;
+  max-width: 70%;
   background-color: #4b5d9d;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para destacar o modal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {

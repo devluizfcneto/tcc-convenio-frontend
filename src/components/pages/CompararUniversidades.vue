@@ -4,6 +4,10 @@
 
     <ComparisonForm :all-ifes="allIfes" :year-options="yearOptions" @compare="doComparison" />
 
+    <div v-if="isLoading" class="loading-overlay">
+      <ProgressSpinner />
+    </div>
+
     <ComparisonResults
       v-if="comparisonLoaded"
       :ifes-tree="ifesTree"
@@ -22,12 +26,14 @@ import Toast from 'primevue/toast'
 import { formatStringEndYear, formatStringStartYear, formatValue } from '@/utils/format'
 import ComparisonForm from '../Common/ComparisonForm.vue'
 import ComparisonResults from '../Common/ComparisonResults.vue'
+import ProgressSpinner from 'primevue/progressspinner'
 
 export default {
   components: {
     Toast,
     ComparisonForm,
-    ComparisonResults
+    ComparisonResults,
+    ProgressSpinner
   },
   data() {
     return {
@@ -35,6 +41,7 @@ export default {
       yearOptions: [],
       firstYearOption: 2000,
 
+      isLoading: false,
       comparisonLoaded: false,
       requestComparison: {},
 
@@ -68,6 +75,7 @@ export default {
 
     async doComparison(ifesSelected, startYear, endYear) {
       this.createComparisonRequest(ifesSelected, startYear, endYear)
+      this.isLoading = true
       try {
         const response = await IfesService.compareIfesConvenios(
           this.requestComparison.queryParam.startYear,
@@ -77,10 +85,13 @@ export default {
         this.responseComparison = response.comparacaoIfesConveniosResponse
         this.comparisonLoaded = true
         this.ifesTree = this.buildTreeFormat()
+        this.isLoading = false
       } catch (error) {
         this.comparisonLoaded = false
         console.error(error.name, error.message)
         this.showErrors(error.message)
+      } finally {
+        this.isLoading = false
       }
     },
 
@@ -133,7 +144,6 @@ export default {
           const porcentagemPagaConvenente =
             (totalValorLiberadoConvenente / totalValorContratadoConvenente) * 100
 
-          // Lógica para tratar convenentes com apenas um convênio (RESTAURADA)
           if (totalConvenios > 1) {
             return {
               key: `convenente-${index}-${convenenteIndex}`,
@@ -166,7 +176,7 @@ export default {
             const porcentagemPagaConvenio =
               (convenio.totalValueReleased / convenio.totalValue) * 100
             return {
-              key: `convenio-${index}-${convenenteIndex}`, // Mantém o mesmo padrão de chave
+              key: `convenio-${index}-${convenenteIndex}`,
               data: {
                 nome: convenio.convenente.name,
                 qtdConvenios: 1,
@@ -280,12 +290,28 @@ export default {
 
 <style scoped>
 .container-main {
-  width: 100%;
+  width: 95%;
+  margin: 0.5em auto;
+  font-family: sans-serif;
 }
 
 h2 {
-  font-size: 25px;
-  margin: 0.5em 0.5em;
-  font-weight: bold;
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 </style>

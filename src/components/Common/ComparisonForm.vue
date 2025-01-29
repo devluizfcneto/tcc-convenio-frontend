@@ -98,50 +98,62 @@ export default {
 
 <style scoped>
 .ifes-inputs-container {
-  width: 95%;
-  max-width: 100%;
-  margin: 0 auto;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  overflow-x: auto;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .ife-input-container {
   display: flex;
   flex-direction: column;
-  margin-right: 1.5em;
-  width: 28%;
-  max-width: 30%;
+  width: 250px;
 }
 
-.period-inputs-container {
-  width: 95%;
-  margin: 1em auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+.ife-input-container label {
+  font-size: 1em;
+  margin-bottom: 5px;
+  color: #555;
 }
 
-label {
-  font-size: 16px;
-  margin: 0.5em;
-}
-
-.ife-input {
-  max-height: 3vh;
-  font-size: small;
+.ifes-input {
   width: 100%;
 }
 
+.period-inputs-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.period-inputs-container label {
+  font-size: 1em;
+  margin-bottom: 5px;
+  color: #555;
+}
+
 .compare-button {
+  background-color: #007bff;
   color: white;
-  margin-left: 1em;
-  padding: 1em;
-  min-width: 20%;
-  background-color: #4b5d9d;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.compare-button:hover {
+  background-color: #0056b3;
 }
 </style>
