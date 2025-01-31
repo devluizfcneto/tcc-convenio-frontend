@@ -5,6 +5,9 @@
     <RankingForm
       :yearOptions="yearOptions"
       :limitOptions="limitOptions"
+      :initialStartYear="startYear"
+      :initialEndYear="endYear"
+      :initialLimit="limit"
       @generate-ranking="generateRanking"
     />
 
@@ -132,9 +135,16 @@ import Button from 'primevue/button'
 import ConvenioService from '@/services/ConvenioService'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { formatValue, formatStringStartYear, formatStringEndYear } from '@/utils/format'
+import {
+  formatValue,
+  formatStringStartYear,
+  formatStringEndYear,
+  getYearFromDateString
+} from '@/utils/format'
 import RankingForm from '../Common/RankingForm.vue'
 import ProgressSpinner from 'primevue/progressspinner'
+import LocalStorageService from '@/services/LocalStorageService'
+import Toast from 'primevue/toast'
 
 export default {
   components: {
@@ -143,12 +153,13 @@ export default {
     DataTable,
     Column,
     RankingForm,
-    ProgressSpinner
+    ProgressSpinner,
+    Toast
   },
   data() {
     return {
-      startYear: '',
-      endYear: '',
+      startYear: new Date().getFullYear(),
+      endYear: new Date().getFullYear(),
       limit: '',
       yearOptions: [],
       limitOptions: [],
@@ -159,11 +170,13 @@ export default {
       isLoaded: false,
 
       ifesRankingFormated: [],
-      convenentesRankingFormated: []
+      convenentesRankingFormated: [],
+      LAST_RANKING_DATA_KEY: "ranking_data"
     }
   },
   async mounted() {
-    this.initializeOptions()
+    this.initializeOptions();
+    this.restoreFromLocalStorage();
   },
   methods: {
     initializeOptions() {
@@ -171,8 +184,6 @@ export default {
       this.yearOptions = Array.from({ length: currentYear + 10 - 2000 + 1 }, (_, index) => {
         return 2000 + index
       })
-      this.startYear = currentYear
-      this.endYear = currentYear
 
       this.limitOptions = ['5', '10', '15', '20']
       this.limit = this.limitOptions[0]
@@ -195,6 +206,7 @@ export default {
         this.formatIfesRanking()
         this.formatConvenentesRanking()
         this.isLoaded = true
+        this.saveToLocalStorage(request, ranking)
       } catch (error) {
         this.showErrors(error.message)
         this.isLoaded = false
@@ -214,7 +226,6 @@ export default {
         }
       })
     },
-
     formatConvenentesRanking() {
       this.convenentesRankingFormated = this.convenentesRankingResponse.map((convenente, index) => {
         return {
@@ -226,6 +237,30 @@ export default {
         }
       })
     },
+    saveToLocalStorage(request, ranking) {
+      const data = {
+        startYear: request.startYear,
+        endYear: request.endYear,
+        limit: request.limit,
+        ifesRankingResponse: ranking.ifesRankingDTO,
+        convenentesRankingResponse: ranking.convenentesRankingDTO
+      }
+      LocalStorageService.setItem(this.LAST_RANKING_DATA_KEY, data)
+    },
+
+    restoreFromLocalStorage() {
+      const storedData = LocalStorageService.getItem(this.LAST_RANKING_DATA_KEY)
+      if (storedData) {
+          this.startYear = getYearFromDateString(storedData.startYear)
+          this.endYear = getYearFromDateString(storedData.endYear)
+          this.limit = storedData.limit
+          this.ifesRankingResponse = storedData.ifesRankingResponse
+          this.convenentesRankingResponse = storedData.convenentesRankingResponse
+          this.formatIfesRanking()
+          this.formatConvenentesRanking()
+          this.isLoaded = true
+        } 
+      },
     showErrors(message) {
       this.$toast.add({
         severity: 'error',
@@ -237,6 +272,7 @@ export default {
     formatValue,
     formatStringStartYear,
     formatStringEndYear,
+    getYearFromDateString,
     exportarCSV(event) {
       const exportTableId = event.currentTarget.id
       if (exportTableId === 'ranking-ifes') {

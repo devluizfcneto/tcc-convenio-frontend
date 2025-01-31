@@ -62,19 +62,38 @@ export default {
     limitOptions: {
       type: Array,
       required: true
+    },
+    initialStartYear: {
+      type: Number,
+      required: true,
+      default: new Date().getFullYear()
+    },
+    initialEndYear: {
+      type: Number,
+      required: true,
+      default: new Date().getFullYear()
+    },
+    initialLimit: {
+      type: String,
+      required: true
     }
   },
-  mounted() {
-    const currentYear = new Date().getFullYear()
-    ;(this.startYear = currentYear),
-      (this.endYear = currentYear),
-      (this.limit = this.limitOptions[0])
+  watch: {
+    initialStartYear(newVal) {
+      this.startYear = newVal
+    },
+    initialEndYear(newVal) {
+      this.endYear = newVal
+    },
+    initialLimit(newVal) {
+      this.limit = newVal
+    }
   },
   data() {
     return {
-      startYear: null,
-      endYear: null,
-      limit: null
+      startYear: new Date().getFullYear(),
+      endYear: new Date().getFullYear(),
+      limit: this.limitOptions[0]
     }
   },
   methods: {
