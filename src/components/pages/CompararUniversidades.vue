@@ -2,7 +2,11 @@
   <div class="container-main">
     <h2>Comparar Universidades</h2>
 
-    <ComparisonForm :all-ifes="allIfes" :year-options="yearOptions" @compare="doComparison" />
+    <ComparisonForm 
+      :all-ifes="allIfes" 
+      :year-options="yearOptions" 
+      @compare="doComparison" 
+      />
 
     <div v-if="isLoading" class="loading-overlay">
       <ProgressSpinner />
@@ -19,14 +23,14 @@
     <Toast />
   </div>
 </template>
-
 <script>
 import IfesService from '@/services/IfesService'
 import Toast from 'primevue/toast'
-import { formatStringEndYear, formatStringStartYear, formatValue } from '@/utils/format'
+import { formatStringEndYear, formatStringStartYear, formatValue, getYearFromDateString } from '@/utils/format'
 import ComparisonForm from '../Common/ComparisonForm.vue'
 import ComparisonResults from '../Common/ComparisonResults.vue'
 import ProgressSpinner from 'primevue/progressspinner'
+import LocalStorageService from '@/services/LocalStorageService'
 
 export default {
   components: {
@@ -46,12 +50,14 @@ export default {
       requestComparison: {},
 
       responseComparison: {},
-      ifesTree: {}
+      ifesTree: {},
+      LAST_DO_COMPARISON_DATA_KEY: "last_comparison_data"
     }
   },
   async mounted() {
-    this.initializeYearsOptions()
+    this.initializeComparisonFormProps()
     await this.getAllIfes()
+    this.restoreComparisonDataFromLocalStorage()
   },
   methods: {
     showErrors(message) {
@@ -86,12 +92,39 @@ export default {
         this.comparisonLoaded = true
         this.ifesTree = this.buildTreeFormat()
         this.isLoading = false
+        this.saveLastComparisonIfes(this.requestComparison, this.responseComparison);
       } catch (error) {
         this.comparisonLoaded = false
         console.error(error.name, error.message)
         this.showErrors(error.message)
       } finally {
         this.isLoading = false
+      }
+    },
+
+    saveLastComparisonIfes(request, comparison){
+      const data = {
+        startYear: request.queryParam.startYear,
+        endYear: request.queryParam.endYear,
+        ifesSelected: request.body.ifesSelected,
+        comparisonResponse: comparison
+      }
+      LocalStorageService.setItem(this.LAST_DO_COMPARISON_DATA_KEY, data);
+    },
+
+    restoreComparisonDataFromLocalStorage() {
+      const storedData = LocalStorageService.getItem(this.LAST_DO_COMPARISON_DATA_KEY);
+      if(storedData){
+        try {
+          this.createComparisonRequest(this.ifesSelected, this.startYear, this.endYear);
+          this.responseComparison = storedData.comparisonResponse;
+          this.comparisonLoaded = true;
+          this.ifesTree = this.buildTreeFormat();
+          this.isLoading = false;
+        }catch(error){
+          console.log(error.name, error.message);
+           LocalStorageService.removeItem(this.LAST_DO_COMPARISON_DATA_KEY);
+        }
       }
     },
 
@@ -106,12 +139,16 @@ export default {
       }
     },
 
-    initializeYearsOptions() {
+    initializeComparisonFormProps() {
       const currentYear = new Date().getFullYear()
       this.yearOptions = Array.from(
         { length: currentYear + 10 - this.firstYearOption + 1 },
         (_, index) => this.firstYearOption + index
       )
+
+      this.startYear = currentYear;
+      this.endYear = currentYear;
+      this.ifesSelected = Array(this.ifesLength).fill(null);
     },
 
     buildTreeFormat() {
@@ -210,6 +247,7 @@ export default {
     },
 
     formatValue,
+    getYearFromDateString,
 
     exportDivToPDF() {
       const applyInlineStyles = (element) => {
