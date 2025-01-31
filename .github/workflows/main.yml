@@ -35,8 +35,8 @@ jobs:
     needs: CI
     runs-on: ubuntu-latest
     permissions:
+      pages: write
       id-token: write
-      contents: read
     environment:
       name: github-pages  # Specifies the environment for deployment.
       url: ${{ steps.deployment.outputs.page_url }}  # Retrieves the deployment URL from the previous deployment step.
