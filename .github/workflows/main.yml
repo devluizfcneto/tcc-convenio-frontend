@@ -31,3 +31,16 @@ jobs:
           source: ./dist/
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3.0.1
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages  # Specifies the environment for deployment.
+      url: ${{ steps.deployment.outputs.page_url }}  # Retrieves the deployment URL from the previous deployment step.
+
+    steps:
+      - name: Deploy GitHub Pages site
+        uses: actions/deploy-pages@v4.0.5
