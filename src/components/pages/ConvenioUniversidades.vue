@@ -218,7 +218,7 @@ export default {
 
 <style scoped>
 .container-main {
-  width: 80%;
+  width: 100%;
   font-family: sans-serif;
 }
 
@@ -249,7 +249,7 @@ h2 {
 }
 
 .container-table-footer {
-  width: 100%;
+  width: 65%;
   display: flex;
   justify-content: flex-end;
   align-items: center;

@@ -1,20 +1,26 @@
 <template>
-  <ul class="container-aside">
-    <li v-for="link in asideLinks" :key="link.name">
-      <router-link :to="link.to" active-class="active">
-        <span v-if="link.icon" class="aside-icon">
-          <i :class="link.icon"></i>
-        </span>
-        {{ link.name }}
-      </router-link>
-    </li>
-  </ul>
+  <div class="container-aside" :class="{ 'collapsed': isCollapsed }">
+    <button class="collapse-button" @click="toggleCollapse">
+      <i :class="isCollapsed ? 'pi pi-angle-right' : 'pi pi-times'"></i>
+    </button>
+    <ul>
+      <li v-for="link in asideLinks" :key="link.name">
+        <router-link :to="link.to" active-class="active">
+          <span class="aside-icon">
+            <i :class="link.icon"></i>
+          </span>
+          <span v-if="!isCollapsed" class="aside-text">{{ link.name }}</span>
+        </router-link>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      isCollapsed: false,
       asideFunctionalities: [
         { name: 'Convenios Universidades', link: '/convenios-universidades', icon: 'pi pi-table' },
         {
@@ -34,6 +40,11 @@ export default {
         icon: func.icon
       }))
     }
+  },
+  methods: {
+    toggleCollapse() {
+      this.isCollapsed = !this.isCollapsed;
+    }
   }
 }
 </script>
@@ -41,40 +52,39 @@ export default {
 <style scoped>
 .container-aside {
   min-width: 20%;
-  max-width: 25%;
+  max-width: 30%;
   background-color: #dddddd;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
 }
 
 ul {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-  width: auto;
   list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Permite que a lista cresça e empurre o botão para baixo */
 }
 
 li {
-  width: auto;
   list-style-type: none;
 }
 
 a {
-  display: block;
+  display: flex;
+  align-items: center;
   text-decoration: none;
   color: black;
-  padding: 1em 1em;
+  padding: 1em;
+  transition: transform 0.3s ease;
 }
 
-a:hover {
+a:hover,
+a:focus {
   background-color: #d3d3d3;
   font-weight: bold;
-}
-
-a:active {
-  background-color: #d3d3d3;
 }
 
 .active {
@@ -83,8 +93,39 @@ a:active {
 }
 
 .aside-icon {
-  margin-right: 0.5em;
-  font-size: 1.2em;
+  margin: 0.5em;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.aside-text {
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+.collapse-button {
+  background: none;
+  border: none;
+  padding: 0.5em;
+  cursor: pointer;
+  margin-top: 1em;
+  margin-right: 1em;
+  margin-bottom: 0.5em;
+  align-self: flex-end;
+}
+
+.collapsed {
+  max-width: 10%;
+  min-width: 5%;
+}
+
+.collapsed .aside-text {
+  display: none;
+}
+
+.collapsed .aside-icon {
+  transform: scale(1.8);
 }
 
 @media (max-width: 768px) {
@@ -93,6 +134,9 @@ a:active {
   }
   a {
     font-size: 0.9em;
+  }
+  .collapsed {
+    width: 40px;
   }
 }
 </style>

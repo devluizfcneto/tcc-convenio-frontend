@@ -217,9 +217,10 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
-  padding: 0 10px;
+  margin-top: 1em;
+  padding: 0 1em;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .page-navigation {
