@@ -22,15 +22,19 @@ jobs:
         run: |
           npm ci
           npm run build
+        env:
+          VITE_URL_BASE_API: ${{ secrets.VITE_URL_BASE_API }}
+      - name: Print env
+        run: echo "VITE_URL_BASE_API=$VITE_URL_BASE_API"
+        env:
+          VITE_URL_BASE_API: ${{ secrets.VITE_URL_BASE_API }}
       - name: Configure GitHub Pages
         id: pages
         uses: actions/configure-pages@v3
-      - name: Jekyll Build
-        uses: actions/jekyll-build-pages@v1.0.13
-        with:
-          source: ./dist/
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          path: ./dist
   CD:
     needs: CI
     runs-on: ubuntu-latest
