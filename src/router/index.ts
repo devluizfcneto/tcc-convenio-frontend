@@ -4,7 +4,7 @@ import CompararUniversidades from '../components/pages/CompararUniversidades.vue
 import RankingConvenios from '../components/pages/RankingConvenios.vue'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/tcc-convenio-frontend/'),
   routes: [
     {
       path: '/convenios-universidades',
