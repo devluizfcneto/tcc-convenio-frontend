@@ -2,7 +2,16 @@
   <form @submit.prevent="submitForm">
     <div class="ifes-inputs-container">
       <div class="ife-input-container" v-for="(fields, index) in initialComparison" :key="index">
-        <label> Universidade {{ index + 1 }}: </label>
+        <label>
+          <img
+            v-if="initialComparison.length > 2"
+            class="remove-convenio"
+            :id="index"
+            src="@/assets/red-close.png"
+            @click="removeConvenio(index)"
+          />
+          Universidade {{ index + 1 }}:
+        </label>
         <Dropdown
           v-model="ifesSelected[index]"
           :options="allIfes"
@@ -89,6 +98,12 @@ export default {
         this.initialComparison.push(this.initialComparison.length)
       }
     },
+    removeConvenio(index) {
+      if (this.initialComparison.length === 3) {
+        this.initialComparison.splice(index, 1)
+        this.ifesSelected.splice(index, 1)
+      }
+    },
     submitForm() {
       this.$emit('compare', this.ifesSelected, this.startYear, this.endYear)
     }
@@ -155,5 +170,9 @@ export default {
 
 .compare-button:hover {
   background-color: #0056b3;
+}
+
+.remove-convenio {
+  max-height: 10px;
 }
 </style>
