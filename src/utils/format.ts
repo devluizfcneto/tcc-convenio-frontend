@@ -41,7 +41,9 @@ export function formatStringStartYear(year: string | null | undefined): string {
 }
 
 export function formatStringEndYear(year: string | null | undefined): string {
+  const today = new Date()
   if (!year) return ''
+  if (parseInt(year) == today.getFullYear()) return today.toLocaleDateString("pt-BR")
   return `31/12/${year}`
 }
 

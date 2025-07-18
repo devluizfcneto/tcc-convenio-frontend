@@ -1,6 +1,6 @@
 <template>
   <div class="container-header">
-    <h1>Portal Convenios TCC</h1>
+    <h1>Portal Convenios</h1>
   </div>
 </template>
 
