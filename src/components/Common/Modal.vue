@@ -22,10 +22,10 @@
         <p><b>Objeto:</b> {{ convenio.description }}</p>
         <p><b>Concedente:</b> {{ convenio.origin }}</p>
         <p><b>Convenente:</b> {{ convenio.destination }}</p>
-        <p v-if="convenio.convenente && convenio.convenente.detailUrl">
+        <p v-if="convenio.destinationDetailUrl">
           <b> Detalhe Convenente: </b>
-          <a :href="convenio.convenente.detailUrl" target="_blank">
-            {{ convenio.convenente.detailUrl }}
+          <a :href="convenio.destinationDetailUrl" target="_blank">
+            {{ convenio.destinationDetailUrl }}
           </a>
         </p>
         <p><b>Tipo Convenente:</b> {{ convenio.destinationType }}</p>
