@@ -15,7 +15,7 @@ class HttpService {
       const response = await http.get<T>(url, config)
       return response
     } catch (error: any) {
-      this.handleError(error) // Lança o erro tratado
+      this.handleError(error)
     }
   }
 

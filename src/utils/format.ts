@@ -8,14 +8,13 @@ export function formatDate(dateString: string | null | undefined): string {
     return new Intl.DateTimeFormat('pt-BR').format(date)
   } catch (error) {
     console.error('Erro ao formatar data:', error)
-    return 'Data Inválida' // Mensagem de erro mais informativa
+    return 'Data Inválida' 
   }
 }
 
 export function formatValue(value: number | null | undefined): string {
   if (value == null) {
-    // Usando == para verificar null e undefined
-    return 'R$ 0,00' // Valor padrão mais claro
+    return 'R$ 0,00'
   }
 
   return new Intl.NumberFormat('pt-BR', {
@@ -57,4 +56,17 @@ export function getYearFromDateString(date: String): Number {
     throw new Error(`Não foi possível extrair ano da string: ${date}`)
   }
   return Number(date.trim().split('/')[2])
+}
+
+/**
+ * Formata uma data para o formato esperado pela API (YYYY-MM-DD)
+ * @param string Data a ser formatada
+ * @return string no formato dd/mm/yyyy
+ */
+export function formatDateToApiString(date: string | null | undefined): string {
+  if (!date) {
+    return ''
+  }
+  const [year, month, day] = date.split('-').map(part => part.trim())
+  return `${day}/${month}/${year}`
 }
