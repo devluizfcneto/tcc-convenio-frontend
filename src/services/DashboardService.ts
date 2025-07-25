@@ -26,7 +26,8 @@ class DashboardService {
       }
       
     } catch (error) {
-      throw new Error('Não foi possível carregar as estatísticas do sistema')
+      console.error('Erro no DashboardService:', error)
+      throw error
     }
   }
 }

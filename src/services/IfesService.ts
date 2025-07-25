@@ -39,8 +39,8 @@ class IfesService {
       LocalStorageService.setItem(cacheKey, dataToCache)
       return responseData
     } catch (error: any) {
-      console.error('Erro ao comparar convênios de IFES:', error.message)
-      throw new Error('Erro ao comparar convênios de IFES. Tente novamente mais tarde.')
+      console.error('Erro ao comparar convênios de IFES:', error)
+      throw error 
     }
   }
 
@@ -61,8 +61,8 @@ class IfesService {
       LocalStorageService.setItem(cacheKey, dataToCache)
       return data
     } catch (error: any) {
-      console.error(`Erro ao buscar dados de ${endpoint}:`, error.message)
-      throw new Error(`Erro ao carregar dados. Tente novamente mais tarde.`)
+      console.error(`Erro ao buscar dados de ${endpoint}:`, error)
+      throw error 
     }
   }
 }

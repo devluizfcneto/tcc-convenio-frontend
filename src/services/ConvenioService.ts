@@ -60,8 +60,8 @@ class ConvenioService {
       LocalStorageService.setItem(cacheKey, dataToCache)
       return data
     } catch (error: any) {
-      console.error(`Erro ao buscar dados de ${endpoint}:`, error.message)
-      throw new Error(`Erro ao carregar dados. Tente novamente mais tarde.`)
+      console.error(`Erro ao buscar dados de ${endpoint}:`, error)
+      throw error
     }
   }
 }
