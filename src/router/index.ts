@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import Home from '../components/pages/Home.vue'
 import ConvenioUniversidades from '../components/pages/ConvenioUniversidades.vue'
 import CompararUniversidades from '../components/pages/CompararUniversidades.vue'
 import RankingConvenios from '../components/pages/RankingConvenios.vue'
@@ -6,6 +7,11 @@ import RankingConvenios from '../components/pages/RankingConvenios.vue'
 const router = createRouter({
   history: createWebHistory('/tcc-convenio-frontend/'),
   routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: Home
+    },
     {
       path: '/convenios-universidades',
       name: 'conveniosUniversidades',

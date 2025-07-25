@@ -22,6 +22,7 @@ export default {
     return {
       isCollapsed: false,
       asideFunctionalities: [
+        { name: 'Início', link: '/', icon: 'pi pi-home' },
         { name: 'Convenios Universidades', link: '/convenios-universidades', icon: 'pi pi-table' },
         {
           name: 'Comparar Universidades',

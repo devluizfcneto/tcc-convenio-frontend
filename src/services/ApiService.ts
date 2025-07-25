@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
+import ErrorHandler from '@/utils/errorHandler'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_URL_BASE_API || 'http://localhost:3001/',
@@ -15,7 +16,7 @@ class HttpService {
       const response = await http.get<T>(url, config)
       return response
     } catch (error: any) {
-      this.handleError(error) // Lança o erro tratado
+      this.handleError(error)
     }
   }
 
@@ -50,19 +51,24 @@ class HttpService {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError
       if (axiosError.response) {
-        console.error('Response Error:', axiosError.response.status, axiosError.response.data)
-        throw new Error(`Erro ${axiosError.response.status} || "Erro na requisição."}`)
+        console.error('ApiService - Response Error:', {
+          status: axiosError.response.status,
+          data: axiosError.response.data,
+          url: axiosError.config?.url
+        })
       } else if (axiosError.request) {
-        console.error('Request Error:', axiosError.request)
-        throw new Error('Não foi possível conectar ao servidor.')
+        console.error('ApiService - Network Error:', {
+          message: 'Não foi possível conectar ao servidor',
+          url: axiosError.config?.url
+        })
       } else {
-        console.error('Error', axiosError.message)
-        throw new Error('Erro na requisição.')
+        console.error('ApiService - Request Setup Error:', axiosError.message)
       }
     } else {
-      console.error('Erro desconhecido:', error)
-      throw new Error('Ocorreu um erro desconhecido.')
+      console.error('ApiService - Unknown Error:', error)
     }
+    const friendlyMessage = ErrorHandler.handleApiError(error)
+    throw new Error(friendlyMessage)
   }
 }
 

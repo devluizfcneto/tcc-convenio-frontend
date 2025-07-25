@@ -58,7 +58,7 @@
       </tbody>
     </table>
     <div class="table-footer" v-if="$slots.footer">
-      <div class="pagination" v-if="paginator && filteredData.length > 0">
+      <div class="pagination" v-if="paginator && (serverSide ? totalRecords > 0 : filteredData.length > 0)">
         <div class="rows-per-page">
           <span>Itens por página:</span>
           <select :value="rows" @input="$emit('update:rows', Number($event.target.value))">
@@ -66,14 +66,15 @@
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
+            <option value="100">100</option>
           </select>
         </div>
         <div class="page-navigation">
-          <button @click="prevPage" :disabled="currentPage === 1">
+          <button @click="prevPage" :disabled="activePage === 1">
             <i class="pi pi-chevron-left"></i>
           </button>
-          <span>Página {{ currentPage }} de {{ totalPages }}</span>
-          <button @click="nextPage" :disabled="currentPage === totalPages">
+          <span>Página {{ activePage }} de {{ totalPages }}</span>
+          <button @click="nextPage" :disabled="activePage === totalPages">
             <i class="pi pi-chevron-right"></i>
           </button>
         </div>
@@ -90,17 +91,24 @@ export default {
     data: { type: Array, required: true },
     columns: { type: Array, required: true },
     paginator: { type: Boolean, default: false },
-    rows: { type: Number, default: 10 }
+    rows: { type: Number, default: 10 },
+    totalRecords: { type: Number, default: 0 },
+    currentPage: { type: Number, default: 1 },
+    serverSide: { type: Boolean, default: false }
   },
   data() {
     return {
       filterValues: {},
-      currentPage: 1,
+      localCurrentPage: 1,
       sortKey: null,
-      sortOrder: 'asc'
+      sortOrder: 'asc',
+      filterTimeout: null
     }
   },
   computed: {
+    activePage() {
+      return this.serverSide ? this.currentPage : this.localCurrentPage
+    },
     filteredData() {
       return this.data.filter((row) => {
         return this.columns.every((col) => {
@@ -114,6 +122,12 @@ export default {
       })
     },
     displayedData() {
+      // Se for serverSide, retorna os dados diretamente pois já vêm filtrados e paginados
+      if (this.serverSide) {
+        return this.data
+      }
+
+      // Lógica original para frontend
       const sortedData = [...this.filteredData]
 
       if (this.sortKey) {
@@ -129,38 +143,78 @@ export default {
 
       if (!this.paginator) return sortedData
 
-      const startIndex = (this.currentPage - 1) * this.rows
+      const startIndex = (this.localCurrentPage - 1) * this.rows
       const endIndex = startIndex + this.rows
 
       return sortedData.slice(startIndex, endIndex)
     },
     totalPages() {
       if (!this.paginator) return 1
+      
+      if (this.serverSide) {
+        return Math.ceil(this.totalRecords / this.rows)
+      }
+      
       return Math.ceil(this.filteredData.length / this.rows)
     }
   },
   methods: {
     filterData() {
-      this.currentPage = 1
+      if (this.serverSide) {
+        // Debounce para evitar muitas requisições
+        clearTimeout(this.filterTimeout)
+        this.filterTimeout = setTimeout(() => {
+          this.$emit('filter-change', this.filterValues)
+        }, 500)
+      } else {
+        this.localCurrentPage = 1
+      }
     },
     nextPage() {
-      if (this.currentPage < this.totalPages) this.currentPage++
+      if (this.serverSide) {
+        if (this.currentPage < this.totalPages) {
+          this.$emit('page-change', { page: this.currentPage + 1 })
+        }
+      } else {
+        if (this.localCurrentPage < this.totalPages) this.localCurrentPage++
+      }
     },
     prevPage() {
-      if (this.currentPage > 1) this.currentPage--
+      if (this.serverSide) {
+        if (this.currentPage > 1) {
+          this.$emit('page-change', { page: this.currentPage - 1 })
+        }
+      } else {
+        if (this.localCurrentPage > 1) this.localCurrentPage--
+      }
     },
     handleSort(col) {
       if (col.sortable) {
-        if (this.sortKey === col.field) {
-          this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
-        } else {
+        if (this.serverSide) {
+          const newSortOrder = (this.sortKey === col.field && this.sortOrder === 'asc') ? 'DESC' : 'ASC'
           this.sortKey = col.field
-          this.sortOrder = 'asc'
+          this.sortOrder = newSortOrder.toLowerCase()
+          this.$emit('sort-change', { 
+            sortField: col.field, 
+            sortOrder: newSortOrder 
+          })
+        } else {
+          if (this.sortKey === col.field) {
+            this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc'
+          } else {
+            this.sortKey = col.field
+            this.sortOrder = 'asc'
+          }
         }
       }
     }
   },
-  emits: ['open-detail', 'update:rows']
+  emits: ['open-detail', 'update:rows', 'page-change', 'filter-change', 'sort-change'],
+  beforeDestroy() {
+    if (this.filterTimeout) {
+      clearTimeout(this.filterTimeout)
+    }
+  }
 }
 </script>
 
