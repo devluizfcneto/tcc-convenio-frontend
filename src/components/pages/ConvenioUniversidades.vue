@@ -117,10 +117,10 @@ export default {
         },
         {
           field: 'acronym',
-          header: 'UF',
+          header: 'Sigla',
           style: { width: '5%', textAlign: 'center' },
           filterable: true,
-          exportHeader: 'Ifes'
+          exportHeader: 'Sigla'
         },
         {
           field: 'destination',
@@ -186,8 +186,8 @@ export default {
         },
         {
           field: 'acronym',
-          header: 'UF',
-          exportHeader: 'Ifes'
+          header: 'Sigla',
+          exportHeader: 'Sigla'
         },
         {
           field: 'destination',
@@ -254,7 +254,6 @@ export default {
       this.isLoading = true
       try {
         const activeFilters = this.getActiveFilters()
-        // Adicionar parâmetro 'all: true' para exportar todos os registros
         const filtersWithAll = { ...activeFilters, all: true }
         
         const response = await ConvenioService.getAllConvenios(
@@ -310,7 +309,6 @@ export default {
     },
     getActiveFilters() {
       const activeFilters = {}
-      // Mapeamento dos campos da interface para os campos esperados pela API
       const fieldMapping = {
         'acronym': 'ifesAcronym',           
         'destinationType': 'convenenteType'
@@ -319,7 +317,6 @@ export default {
       Object.keys(this.filters).forEach(key => {
         const filterValue = this.filters[key].value
         if (filterValue && filterValue.trim() !== '') {
-          // Usar o nome mapeado se existir, senão usar o nome original
           const apiFieldName = fieldMapping[key] || key
           activeFilters[apiFieldName] = filterValue
         }
@@ -331,7 +328,6 @@ export default {
       await this.getConvenios()
     },
     async onFilterChange(filters) {
-      // Atualizar os filtros do componente
       Object.keys(filters).forEach(key => {
         if (this.filters[key]) {
           this.filters[key].value = filters[key]
@@ -341,9 +337,8 @@ export default {
       await this.getConvenios()
     },
     async onSortChange(event) {
-      // Mapeamento dos campos de ordenação da interface para os campos da API
       const sortFieldMapping = {
-        'acronym': 'ifesAcronym' // Ordenação por sigla da IFES
+        'acronym': 'ifesAcronym'
       }
       
       this.sortBy = sortFieldMapping[event.sortField] || event.sortField

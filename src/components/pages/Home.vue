@@ -92,7 +92,7 @@
             </p>
             <ul>
               <li>Filtros dinâmicos</li>
-              <li>Ordenação múltipla</li>
+              <li>Ordenação</li>
               <li>Paginação otimizada</li>
               <li>Exportação de dados</li>
             </ul>
@@ -110,13 +110,11 @@
             <h3>Comparação de Universidades</h3>
             <p>
               Compare métricas entre diferentes IFES, analisando valores totais, 
-              quantidade de convênios e distribuição por tipos de convenentes.
+              quantidade de convênios e respectivos convenentes.
             </p>
             <ul>
-              <li>Seleção múltipla de IFES</li>
+              <li>Seleção de até 3 IFES</li>
               <li>Gráficos comparativos</li>
-              <li>Métricas detalhadas</li>
-              <li>Análise temporal</li>
             </ul>
           </div>
           <div class="feature-arrow">
@@ -131,15 +129,10 @@
           <div class="feature-content">
             <h3>Ranking de Convênios</h3>
             <p>
-              Visualize rankings das IFES por diferentes critérios: valor total liberado, 
-              quantidade de convênios e valor médio por convênio.
+              Visualize rankings das IFES e Convenentes por: valor total liberado, 
+              e valor total recebido. Exportação em CSV disponível.
             </p>
-            <ul>
-              <li>Múltiplos critérios de ranking</li>
-              <li>Visualização gráfica</li>
-              <li>Filtros por período</li>
-              <li>Comparação percentual</li>
-            </ul>
+
           </div>
           <div class="feature-arrow">
             <i class="pi pi-arrow-right"></i>
